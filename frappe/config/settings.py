@@ -11,6 +11,11 @@ def get_data():
 			"items": [
 				{
 					"type": "doctype",
+					"name": "Company",
+					"label": _("Company"),
+				},
+				{
+					"type": "doctype",
 					"name": "System Settings",
 					"label": _("System Settings"),
 					"description": _("Language, Date and Time settings"),
