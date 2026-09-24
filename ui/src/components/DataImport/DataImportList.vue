@@ -79,7 +79,7 @@
 			}"
 		>
 			<template #body-content>
-				<div>
+				<div class="space-y-4">
 					<Link
 						v-model="doctypeForImport"
 						doctype="DocType"
@@ -88,6 +88,17 @@
 						}"
 						label="Choose a Document Type to import"
 					/>
+					<div class="space-y-1.5">
+						<FormControl
+							type="select"
+							v-model="importType"
+							:options="importTypeOptions"
+							label="Import type"
+						/>
+						<div class="text-p-sm text-ink-gray-5 leading-4">
+							{{ importTypeDescription }}
+						</div>
+					</div>
 				</div>
 			</template>
 		</Dialog>
@@ -108,6 +119,22 @@ const search = ref("");
 const importStatus = ref("All");
 const showModal = ref(false);
 const doctypeForImport = ref<string | null>(null);
+const importType = ref("Insert New Records");
+
+const importTypeOptions = [
+	{ label: "Insert New Records", value: "Insert New Records" },
+	{ label: "Update Existing Records", value: "Update Existing Records" },
+	{ label: "Insert or Update Records", value: "Insert or Update Records" },
+];
+
+const importTypeDescription = computed(() => {
+	return {
+		"Insert New Records": "Add new records. Existing records are not changed.",
+		"Update Existing Records":
+			"Update records that already exist. Each row must include the record's ID (name).",
+		"Insert or Update Records": "Add new records and update existing ones in the same import.",
+	}[importType.value];
+});
 const emit = defineEmits(["updateStep"]);
 const router = useRouter();
 
@@ -134,7 +161,7 @@ const createDataImport = (close: () => void) => {
 	props.dataImports.insert.submit(
 		{
 			reference_doctype: doctypeForImport.value!,
-			import_type: "Insert New Records",
+			import_type: importType.value,
 			mute_emails: true,
 			status: "Pending",
 		},
